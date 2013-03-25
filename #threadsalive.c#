@@ -1,0 +1,9 @@
+// threadsalive.c
+
+
+
+#define THREAD_MAX = 100
+
+static void ta_create(void (*func)(void*), void* arg) {
+  ucontext_t* new_thread = malloc(sizeof(ucontext_t));
+  new_thread->uc_stack.ss_sp = malloc(

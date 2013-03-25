@@ -1,15 +1,12 @@
 // threadsalive.c
 
-
 #include "threadsalive.h"
+#define THREAD_MAX = 100
 
+static void ta_create(void (*func)(void*), void* arg) {
 
-void ta_yield(void){
-
-
+static void ta_yield(void){
     
 }
-#include <stdlib.h>
-#include <stdio.h>
-#include <ucontext.h>
 
+  
