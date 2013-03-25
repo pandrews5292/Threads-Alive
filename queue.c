@@ -7,7 +7,7 @@ struct queue* create_queue(){
     return q;
 }
 
-struct queue_node* create_queue_node(ucontext_t thread){
+struct queue_node* create_queue_node(ucontext_t* thread){
     //create a queue_node
     struct queue_node* n = (struct queue_node*)malloc(sizeof(struct queue_node));
     n->thread = thread;
@@ -19,10 +19,10 @@ int get_length(struct queue* q){
     return q->length;
 }
 
-void push(struct queue* q, ucontext_t thread){
+void push(struct queue* q, ucontext_t* thread){
     //push a thread onto the queue
     struct queue_node* n = create_queue_node(thread);
-    int i = 0;
+    int i=0;
 
     if (get_length(q) == 0){
 	q->head = n;
@@ -30,7 +30,7 @@ void push(struct queue* q, ucontext_t thread){
     }
     else{
 	struct queue_node* cur = q->head;
-	for (i;i<get_length(q)-1;i++){
+	for (;i<get_length(q)-1;i++){
 	    cur = cur->next;
 	}
 	cur->next = n;
@@ -38,11 +38,11 @@ void push(struct queue* q, ucontext_t thread){
     }
 }
 
-char* pop(struct queue* q){
+ucontext_t* pop(struct queue* q){
     //pop a message of the queue
 
     if (q->length > 1){
-	ucontext_t thread = q->head->thread;
+	ucontext_t* thread = q->head->thread;
 	struct queue_node* new_head = q->head->next;
 	free(q->head);
 	q->head = new_head;
@@ -50,14 +50,14 @@ char* pop(struct queue* q){
 	return thread;
     }
     else if (q->length == 1){
-	char* thread = q->head->thread;
+	ucontext_t* thread = q->head->thread;
 	free(q->head);
 	q->length--;
 	return thread;
     }
     else {
 	printf("Error: Queue length 0\n");
-	return "\0";
+	return NULL;
     }
 }
 
@@ -70,7 +70,7 @@ void destroy_queue(struct queue* q){
     //free malloced nodes and free queue 
     struct queue_node* cur = q->head;
     int i = 0;
-    for (i;i<get_length(q);i++){
+    for (;i<get_length(q);i++){
 	struct queue_node* next = cur->next;
 	free(cur);
 	cur = next;
