@@ -1,4 +1,4 @@
-#include <threadsalive.h>
+#include "threadsalive.h"
 #include <stdio.h>
 
 void add(){
@@ -17,7 +17,9 @@ int main(){
 
     int i = 0, n = 10;
     for (;i<10;i++){
-	printf("%d\n",n+i);
+      if (n+i==15)
+	ta_yield();
+      printf("%d\n",n+i);
     }
        
     return 0;
