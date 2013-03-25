@@ -1,6 +1,7 @@
 // threadsalive.c
 
 #include "threadsalive.h"
+#include "queue.h"
 
 static void ta_create(void (*func)(void*), void* arg) {
   ucontext_t* new_thread = malloc(sizeof(ucontext_t));
@@ -13,6 +14,14 @@ static void ta_create(void (*func)(void*), void* arg) {
 }
 
 static void ta_yield(void){
+    int get_ctx_ret, set_ctx_ret;
+    ucontext_t* cur_thread = malloc(sizeof(ucontext_t));
+    get_ctx_ret = getcontext(cur_thread);
+    set_ctx_ret = setcontext(cur_thread->uc_link);
+    
+    
+    
+
     
 }
 
