@@ -17,7 +17,11 @@ static void ta_create(void (*func)(void*), void* arg) {
 }
 
 static void ta_yield(void){
-  
+    int get_ctx_ret, set_ctx_ret;
+    ucontext_t* cur_thread;
+    get_ctx_ret = getcontext(cur_thread);
+    push(t_queue, cur_thread);
+    ucontext_t* new_thread = pop(t_queue);
 }
 
   
