@@ -51,7 +51,7 @@ ucontext_t* pop(struct queue* q){
     }
     else if (q->length == 1){
 	ucontext_t* thread = q->head->thread;
-	free(q->head);
+	//free(q->head);
 	q->length--;
 	return thread;
     }
