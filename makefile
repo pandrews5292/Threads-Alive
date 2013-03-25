@@ -1,10 +1,15 @@
-OPTS = -Wall -g -fpic
+OPTS = -Wall -Wno-unused-function -g -fPIC
 
 queue.o: queue.c queue.h
-	gcc ${OPTS} -c queue.c
+	gcc -c queue.c ${OPTS}
 
 threadsalive.o: threadsalive.c threadsalive.h
-	gcc ${OPS} -c threadsalive.c
+	gcc -c threadsalive.c ${OPTS}
 
-threadsalive.so: threadsalive.o
-	gcc -o threadsalive.so threadsalive.o -Wall -g -shared 
+libthreadsalive.so: threadsalive.o
+	gcc -o libthreadsalive.so threadsalive.o queue.o -Wall -g -shared 
+
+clean:
+	rm -f *~
+	rm -f *.o
+

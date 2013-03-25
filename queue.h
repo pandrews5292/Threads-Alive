@@ -8,10 +8,10 @@ struct queue_node {
     struct queue_node* next;
 };
 
-struct queue {
+typedef struct queue {
     struct queue_node* head;
     int length;
-};
+}queue;
 
 void show(struct queue* q);
 
