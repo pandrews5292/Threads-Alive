@@ -11,10 +11,11 @@ libthreadsalive.so: threadsalive.o queue.o
 	gcc -o libthreadsalive.so threadsalive.o queue.o -Wall -g -shared 
 
 test0: test_threads.c libthreadsalive.so
-	gcc -o test_threads test_threads.c -L. -lthreadsalive
+	gcc -o test_threads test_threads.c -L. -lthreadsalive -g
 
 clean:
 	rm -f test_threads
 	rm -f *~
+	rm -f \#*
 	rm -f *.o
 	rm -f *.so

@@ -3,31 +3,31 @@
 #include "threadsalive.h"
 
 queue* t_queue;
+static ucontext_t temp_context;
 
 void ta_libinit(void) {
   t_queue = create_queue();
 }
 
 void ta_create(void (*func)(void), void* arg) {
-  printf("%d\n", get_length(t_queue));
-  ucontext_t* new_thread = malloc(sizeof(ucontext_t));
+  //printf("%d\n", get_length(t_queue));
+  ucontext_t new_thread;
+  getcontext(&new_thread);
   void* new_stack = malloc(524288);
+  getcontext(&temp_context);
 
-  new_thread->uc_stack.ss_sp = new_stack;
-  new_thread->uc_stack.ss_size = sizeof(new_stack);
-  new_thread->uc_link = NULL;
-  makecontext(new_thread, func, 1, arg);
+  new_thread.uc_stack.ss_sp = new_stack;
+  new_thread.uc_stack.ss_size = sizeof(new_stack);
+  new_thread.uc_link = &temp_context;
+  makecontext(&new_thread, func, 1, arg);
   push(t_queue, new_thread);
-  printf("%d\n", get_length(t_queue));
+  //printf("%d\n", get_length(t_queue));
 }
 
-void ta_yield(void){
-    int get_ctx_ret, set_ctx_ret;
-    ucontext_t* cur_thread = NULL;
-    get_ctx_ret = getcontext(cur_thread);
-    push(t_queue, cur_thread);
-    ucontext_t* new_thread = pop(t_queue);
-    swapcontext(cur_thread, new_thread);
+void ta_yield(void) {
+  ucontext_t new_thread = pop(t_queue);
+  swapcontext(&temp_context, &new_thread);
+  push(t_queue, temp_context);
 }
 
   
