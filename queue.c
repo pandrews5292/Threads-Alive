@@ -3,6 +3,7 @@
 struct queue* create_queue(){
     //create scheduling queue
     struct queue* q = (struct queue*)malloc(sizeof(struct queue));
+    q->head = NULL;
     q->length = 0;
     return q;
 }
@@ -26,32 +27,34 @@ void push(struct queue* q, ucontext_t thread){
 
     if (get_length(q) == 0){
 	q->head = n;
+	q->tail = n;
+	n->next = NULL;
+	n->prev = NULL;
 	q->length++;
     }
     else{
-	struct queue_node* cur = q->head;
-	for (;i<get_length(q)-1;i++){
-	    cur = cur->next;
-	}
-	cur->next = n;
+	q->tail->prev = n;
+	n->next = q->tail;
+	q->tail = n;
+	q->tail->prev = NULL;
 	q->length++;
     }
 }
 
 ucontext_t pop(struct queue* q){
-    //pop a message of the queue
+    //pop a context off the queue
 
     if (q->length > 1){
-	ucontext_t thread = q->head->thread;
-	struct queue_node* new_head = q->head->next;
-	free(q->head);
-	q->head = new_head;
+        ucontext_t thread = q->head->thread;
+	q->head = q->head->prev;
+	q->head->next = NULL;
 	q->length--;
 	return thread;
     }
     else if (q->length == 1){
 	ucontext_t thread = q->head->thread;
-	//free(q->head);
+	q->head = NULL;
+	q->tail = NULL;
 	q->length--;
 	return thread;
     }
@@ -61,13 +64,27 @@ ucontext_t pop(struct queue* q){
     }
 }
 
+ucontext_t get_head(struct queue* q){
+    return q->head->thread;
+
+}
 
 void show(struct queue* q){
     //print out the queue for debug reasons
+    /*
+    int i = 0;
+    struct queue_node* cur = q->head;
+    for(;i<get_length(q)-1;i++){
+	printf("%d -> ", cur->thread);
+	cur = cur->prev;
+    }
+    printf("%d\n", cur->thread);
+    */
+
 }
 
 void destroy_queue(struct queue* q){
-    //free malloced nodes and free queue 
+    //free malloc'ed nodes and free queue 
     struct queue_node* cur = q->head;
     int i = 0;
     for (;i<get_length(q);i++){
