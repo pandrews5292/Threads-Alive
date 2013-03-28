@@ -4,6 +4,7 @@ struct queue* create_queue(){
     //create scheduling queue
     struct queue* q = (struct queue*)malloc(sizeof(struct queue));
     q->head = NULL;
+    q->tail = NULL;
     q->length = 0;
     return q;
 }
@@ -71,7 +72,7 @@ ucontext_t get_head(struct queue* q){
 
 void show(struct queue* q){
     //print out the queue for debug reasons
-    /*
+    /*  Irrelevent for printing out contexts //
     int i = 0;
     struct queue_node* cur = q->head;
     for(;i<get_length(q)-1;i++){
@@ -88,9 +89,9 @@ void destroy_queue(struct queue* q){
     struct queue_node* cur = q->head;
     int i = 0;
     for (;i<get_length(q);i++){
-	struct queue_node* next = cur->next;
+	struct queue_node* prev = cur->prev;
 	free(cur);
-	cur = next;
+	cur = prev;
     }
     free(q);
 }
