@@ -46,6 +46,8 @@ ucontext_t pop(struct queue* q){
 
     if (q->length > 1){
         ucontext_t thread = q->head->thread;
+	struct queue_node* head = q->head;
+	free(head);
 	q->head = q->head->prev;
 	q->head->next = NULL;
 	q->length--;
@@ -55,6 +57,7 @@ ucontext_t pop(struct queue* q){
 	ucontext_t thread = q->head->thread;
 	q->head = NULL;
 	q->tail = NULL;
+	free(q->head);
 	q->length--;
 	return thread;
     }
@@ -71,7 +74,7 @@ ucontext_t get_head(struct queue* q){
 
 void show(struct queue* q){
     //print out the queue for debug reasons
-    /*
+    /*  Irrelevent for printing out contexts //
     int i = 0;
     struct queue_node* cur = q->head;
     for(;i<get_length(q)-1;i++){
@@ -88,9 +91,9 @@ void destroy_queue(struct queue* q){
     struct queue_node* cur = q->head;
     int i = 0;
     for (;i<get_length(q);i++){
-	struct queue_node* next = cur->next;
+	struct queue_node* prev = cur->prev;
 	free(cur);
-	cur = next;
+	cur = prev;
     }
     free(q);
 }
