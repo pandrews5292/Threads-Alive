@@ -4,6 +4,7 @@ struct queue* create_queue(){
     //create scheduling queue
     struct queue* q = (struct queue*)malloc(sizeof(struct queue));
     q->head = NULL;
+    q->tail = NULL;
     q->length = 0;
     return q;
 }
@@ -23,7 +24,6 @@ int get_length(struct queue* q){
 void push(struct queue* q, ucontext_t thread){
     //push a thread onto the queue
     struct queue_node* n = create_queue_node(thread);
-    int i=0;
 
     if (get_length(q) == 0){
 	q->head = n;

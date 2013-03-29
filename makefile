@@ -10,7 +10,7 @@ threadsalive.o: threadsalive.c threadsalive.h
 libthreadsalive.so: threadsalive.o queue.o
 	gcc -o libthreadsalive.so threadsalive.o queue.o -Wall -g -shared 
 
-test0: test_threads.c libthreadsalive.so
+test_threads: test_threads.c libthreadsalive.so
 	gcc -o test_threads test_threads.c -L. -lthreadsalive -g
 
 clean:
