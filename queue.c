@@ -47,8 +47,9 @@ ucontext_t pop(struct queue* q){
     if (q->length > 1){
         ucontext_t thread = q->head->thread;
 	struct queue_node* head = q->head;
+        q->head = q->head->prev;
+
 	free(head);
-	q->head = q->head->prev;
 	q->head->next = NULL;
 	q->length--;
 	return thread;
