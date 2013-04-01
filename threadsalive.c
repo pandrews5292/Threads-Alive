@@ -4,58 +4,67 @@
 #define STACK_SIZE 524288
 
 static queue* t_queue;
-static ucontext_t main_ctx;
-static int wait_all_flag = 0;
+static ucontext_t* main_ctx;
 
 void ta_libinit(void) {
   t_queue = create_queue();
-  getcontext(&main_ctx);
+  main_ctx = (ucontext_t*)malloc(sizeof(ucontext_t));
 }
 
-void ta_create(void (*func)(void*), void* arg) {
-  //printf("%d\n", get_length(t_queue));
+void ta_create(void (*func)(void), void* arg) {
 
-  ucontext_t new_thread;
-  getcontext(&new_thread);
+  tcb* new_thread = (tcb*)malloc(sizeof(tcb));
+  new_thread->ctx = (ucontext_t*)malloc(sizeof(ucontext_t));
+  getcontext(new_thread->ctx);
+  new_thread->status = 1;
  
-  new_thread.uc_stack.ss_sp = malloc(STACK_SIZE);
-  new_thread.uc_stack.ss_size = STACK_SIZE;
-  new_thread.uc_link = &main_ctx;
+  new_thread->ctx->uc_stack.ss_sp = malloc(STACK_SIZE);
+  new_thread->ctx->uc_stack.ss_size = STACK_SIZE;
+  new_thread->ctx->uc_link = main_ctx;
   
   if (arg)
-    makecontext(&new_thread, func, 1, *((int*)arg));
+    makecontext(new_thread->ctx, func, 1, *((int*)arg));
   else
-    makecontext(&new_thread, func, 0);
+    makecontext(new_thread->ctx, func, 0);
+
   push(t_queue, new_thread);
-  //printf("%d\n", get_length(t_queue));
+
 }
 
 void ta_yield(void) {
 
-  ucontext_t cur_ctx;
-  if (!get_length(t_queue)) {
-    printf("QUEUE EMPTY. Switching to main\n");
-    getcontext(&cur_ctx);
-    push(t_queue, cur_ctx);
-    setcontext(&main_ctx);
-  }
-  
-  else {
-    ucontext_t new_thread = pop(t_queue);
-    if (main_ctx.uc_stack.ss_sp != cur_ctx.uc_stack.ss_sp)
-      push(t_queue, cur_ctx);
-    swapcontext(&cur_ctx, &new_thread);
+  if (len(t_queue)) {
+    tcb* next_thread = pop(t_queue);
+    ucontext_t* next_ctx = next_thread->ctx;
+    next_ctx->uc_link = main_ctx;
+    free(next_thread);
+
+    tcb* cur_thread = (tcb*)malloc(sizeof(tcb));
+    cur_thread->ctx = (ucontext_t*)malloc(sizeof(ucontext_t));
+    cur_thread->status = 1;   
+
+    push(t_queue, cur_thread);
+    swapcontext(cur_thread->ctx, next_ctx); 
+    
   }
 }
 
 int ta_waitall(void) {
-  wait_all_flag = 1;
-  
-  while(get_length(t_queue)) {
-    ucontext_t next_ctx = pop(t_queue);
-    swapcontext(&main_ctx, &next_ctx);
-  }
-  wait_all_flag = 0;
 
+  if (!len(t_queue))
+    return 1;
+
+  while(len(t_queue)) {
+
+    tcb* next_thread = pop(t_queue);
+    ucontext_t* next_ctx =  next_thread->ctx;
+    free(next_thread);
+
+    next_ctx->uc_link = main_ctx;
+    swapcontext(main_ctx, next_ctx);
+    printf("LEN: %d\n", len(t_queue));
+  }
+  
   return 0;
 }
+ 

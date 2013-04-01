@@ -9,23 +9,23 @@ struct queue* create_queue(){
     return q;
 }
 
-struct queue_node* create_queue_node(ucontext_t thread){
+struct queue_node* create_queue_node(tcb* thread){
     //create a queue_node
     struct queue_node* n = (struct queue_node*)malloc(sizeof(struct queue_node));
     n->thread = thread;
     return n;
 }
 
-int get_length(struct queue* q){
+int len(struct queue* q){
     //get length of queue
     return q->length;
 }
 
-void push(struct queue* q, ucontext_t thread){
+void push(struct queue* q, tcb* thread){
     //push a thread onto the queue
     struct queue_node* n = create_queue_node(thread);
 
-    if (get_length(q) == 0){
+    if (len(q) == 0){
 	q->head = n;
 	q->tail = n;
 	n->next = NULL;
@@ -41,11 +41,11 @@ void push(struct queue* q, ucontext_t thread){
     }
 }
 
-ucontext_t pop(struct queue* q){
+tcb* pop(struct queue* q) {
     //pop a context off the queue
 
     if (q->length > 1){
-        ucontext_t thread = q->head->thread;
+        tcb* thread = q->head->thread;
 	struct queue_node* head = q->head;
         q->head = q->head->prev;
 
@@ -55,7 +55,7 @@ ucontext_t pop(struct queue* q){
 	return thread;
     }
     else if (q->length == 1){
-	ucontext_t thread = q->head->thread;
+	tcb* thread = q->head->thread;
 	q->head = NULL;
 	q->tail = NULL;
 	free(q->head);
@@ -68,7 +68,7 @@ ucontext_t pop(struct queue* q){
     }
 }
 
-ucontext_t get_head(struct queue* q){
+tcb* get_head(struct queue* q){
     return q->head->thread;
 
 }
@@ -91,8 +91,10 @@ void destroy_queue(struct queue* q){
     //free malloc'ed nodes and free queue 
     struct queue_node* cur = q->head;
     int i = 0;
-    for (;i<get_length(q);i++){
+    for (;i<len(q);i++){
 	struct queue_node* prev = cur->prev;
+	free(cur->thread->ctx);
+	free(cur->thread);
 	free(cur);
 	cur = prev;
     }

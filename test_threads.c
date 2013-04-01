@@ -13,27 +13,25 @@ void add(){
 
 }
 
-void add1() {
+void add1(int x) {
   
   int i=0, n=0;
-  for (;i<5;i++) {
-    printf("%d\n",n-i);
+  for (;i<6;i++) {
+    if (i > 3)
+      ta_yield();
+    printf("%d\n",x+i);
   }
 }
 
 int main(){
     ta_libinit();
 
-    ta_create(&add, NULL);
-    ta_create(&add1, NULL);
+    int x = -6;
+    int* x_p = &x;
 
-    int i = 0, n = 10;
-    for (;i<10;i++){
-      if (n+i==15) {
-	ta_yield();
-      }
-      printf("%d\n",n+i);
-    }
+    ta_create(&add, NULL);
+    ta_create((&add1)(void), (void*)x_p);
+
     ta_waitall();
 
     return 0;
