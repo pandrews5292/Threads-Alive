@@ -1,5 +1,6 @@
 OPTS = -Wall -Wno-unused-function -g -fPIC
 
+all: test_threads
 
 queue.o: queue.c queue.h
 	gcc -c queue.c ${OPTS}
@@ -19,4 +20,4 @@ clean:
 	rm -f \#*
 	rm -f *.o
 	rm -f *.so
-	rm -f \#*
+
