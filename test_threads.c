@@ -30,7 +30,7 @@ int main(){
     int* x_p = &x;
 
     ta_create(&add, NULL);
-    ta_create((&add1)(void), (void*)x_p);
+    ta_create(&add1, (void*)x_p);
 
     ta_waitall();
 
