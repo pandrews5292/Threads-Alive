@@ -5,20 +5,32 @@
 static int guard = 0;
 
 void ta_sem_init(tasem_t* sema, int value) {
-  sema = (tasem_t*)malloc(sizeof(tasem_t));
-  sema->value = value;
-  sema->w_queue = create_queue();
+    sema = (tasem_t*)malloc(sizeof(tasem_t));
+    sema->value = value;
+    sema->w_queue = create_queue();
 }
 
 void ta_sem_destroy(tasem_t* sema) {
-  destroy_queue(sema->w_queue);
-  free(sema);
+    destroy_queue(sema->w_queue);
+    free(sema);
 }
 
 void ta_sem_signal(tasem_t* sema) {
-  while(cas(&guard, 0, 1));
+    while(cas(&guard, 0, 1));
   
-	
+}
+
+void ta_sem_wait(tasem_t* sema){
+    while(!cas(&guard, 0, 1));
+    sema->value--;
+    if (sema->value < 0){
+	tcb* tcb = tcb_init();
+	sema->w_queue->push(tcb);
+	//block()
+	guard = 0;
+    }
+    else
+	guard = 0;
 }
 
 void ta_lock_init(talock_t* lock){
