@@ -1,13 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <ucontext.h>
 
 typedef struct control_block {
   ucontext_t* ctx;
   int status;
 } tcb;
-
 
 
 struct queue_node {

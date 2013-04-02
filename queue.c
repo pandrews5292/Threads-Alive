@@ -91,7 +91,7 @@ void destroy_queue(struct queue* q){
     //free malloc'ed nodes and free queue 
     struct queue_node* cur = q->head;
     int i = 0;
-    for (;i<len(q);i++){
+    for (;i<get_length(q);i++){
 	struct queue_node* prev = cur->prev;
 	free(cur->thread->ctx);
 	free(cur->thread);
