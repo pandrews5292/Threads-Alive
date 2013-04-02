@@ -22,3 +22,5 @@ void ta_lock_init(talock_t *lock);
 void ta_lock_destroy(talock_t *lock);
 void ta_lock(talock_t *lock);
 void ta_unlock(talock_t *lock);
+
+void cas(int*, int, int);
