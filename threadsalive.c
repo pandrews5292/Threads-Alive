@@ -6,29 +6,35 @@
 static queue* t_queue;
 static ucontext_t* main_ctx;
 
+static tcb* tcb_init(void) {
+  tcb* new_tcb = (tcb*)malloc(sizeof(tcb));
+  new_tcb->ctx = (ucontext*)malloc(sizeof(ucontext_t));
+  getcontext(new_tcb_ctx);
+  new_tcb->status = 1;
+  
+  return new_tcb;
+}
+
 void ta_libinit(void) {
-    t_queue = create_queue();
-    main_ctx = (ucontext_t*)malloc(sizeof(ucontext_t));
+  t_queue = create_queue();
+  main_ctx = (ucontext_t*)malloc(sizeof(ucontext_t));
 }
 
 void ta_create(void (*func)(void), void* arg) {
-    
-    tcb* new_thread = (tcb*)malloc(sizeof(tcb));
-    new_thread->ctx = (ucontext_t*)malloc(sizeof(ucontext_t));
-    getcontext(new_thread->ctx);
-    new_thread->status = 1;
-    
-    new_thread->ctx->uc_stack.ss_sp = malloc(STACK_SIZE);
-    new_thread->ctx->uc_stack.ss_size = STACK_SIZE;
-    new_thread->ctx->uc_link = main_ctx;
-    
-    if (arg)
-	makecontext(new_thread->ctx, func, 1, *((int*)arg));
-    else
-	makecontext(new_thread->ctx, func, 0);
-    
-    push(t_queue, new_thread);
-    
+  
+  tcb* new_thread = tcb_init();
+  
+  new_thread->ctx->uc_stack.ss_sp = malloc(STACK_SIZE);
+  new_thread->ctx->uc_stack.ss_size = STACK_SIZE;
+  new_thread->ctx->uc_link = main_ctx;
+  
+  if (arg)
+    makecontext(new_thread->ctx, func, 1, *((int*)arg));
+  else
+    makecontext(new_thread->ctx, func, 0);
+  
+  push(t_queue, new_thread);
+  
 }
 
 void ta_yield(void) {
@@ -39,9 +45,7 @@ void ta_yield(void) {
 	next_ctx->uc_link = main_ctx;
 	free(next_thread);
 	
-	tcb* cur_thread = (tcb*)malloc(sizeof(tcb));
-	cur_thread->ctx = (ucontext_t*)malloc(sizeof(ucontext_t));
-	cur_thread->status = 1;   
+	tcb* cur_thread = tcb_init();   
 	
 	push(t_queue, cur_thread);
 	swapcontext(cur_thread->ctx, next_ctx); 

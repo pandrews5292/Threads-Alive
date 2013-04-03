@@ -15,11 +15,9 @@ void ta_sem_destroy(tasem_t* sema) {
   free(sema);
 }
 
-void ta_sem_signal(tasem_t* sema) {
-  while(cas(&guard, 0, 1));
-  
-	
-}
+void ta_sem_signal(tasem_t* sema) {}
+
+void ta_sem_wait(tasem_t* sema) {}
 
 void ta_lock_init(talock_t* lock){
     lock = (talock_t*)malloc(sizeof(talock_t));
