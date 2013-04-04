@@ -67,7 +67,7 @@ int ta_waitall(void) {
 	swapcontext(main_ctx, next_ctx);
 	printf("LEN: %d\n", len(t_queue));
     }
-    
+
     return 0;
 }
 
