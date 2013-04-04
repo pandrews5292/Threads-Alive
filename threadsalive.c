@@ -20,6 +20,7 @@ tcb* tcb_init() {
 
 void ta_libinit(void) {
     t_queue = create_queue();
+    s_queue = sema_create_queue();
     main_ctx = (ucontext_t*)malloc(sizeof(ucontext_t));
 }
 
