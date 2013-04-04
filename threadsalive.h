@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <ucontext.h>
 #include "queue.h"
+#include "sema_queue.h"
 
 static struct queue* t_queue;
 
