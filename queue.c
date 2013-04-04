@@ -2,30 +2,30 @@
 
 #include "queue.h"
 
-struct queue* create_queue(){
+queue* create_queue(){
     //create scheduling queue
-    struct queue* q = (struct queue*)malloc(sizeof(struct queue));
+    queue* q = (queue*)malloc(sizeof(queue));
     q->head = NULL;
     q->tail = NULL;
     q->length = 0;
     return q;
 }
 
-struct queue_node* create_queue_node(tcb* thread){
+queue_node* create_queue_node(tcb* thread){
     //create a queue_node
-    struct queue_node* n = (struct queue_node*)malloc(sizeof(struct queue_node));
+    queue_node* n = (queue_node*)malloc(sizeof(queue_node));
     n->thread = thread;
     return n;
 }
 
-int len(struct queue* q){
+int len(queue* q){
     //get length of queue
     return q->length;
 }
 
-void push(struct queue* q, tcb* thread){
+void push(queue* q, tcb* thread){
     //push a thread onto the queue
-    struct queue_node* n = create_queue_node(thread);
+    queue_node* n = create_queue_node(thread);
 
     if (len(q) == 0){
 	q->head = n;
@@ -43,12 +43,12 @@ void push(struct queue* q, tcb* thread){
     }
 }
 
-tcb* pop(struct queue* q) {
+tcb* pop(queue* q) {
     //pop a context off the queue
 
     if (q->length > 1){
         tcb* thread = q->head->thread;
-	struct queue_node* head = q->head;
+	queue_node* head = q->head;
         q->head = q->head->prev;
 
 	free(head);
@@ -70,16 +70,16 @@ tcb* pop(struct queue* q) {
     }
 }
 
-tcb* get_head(struct queue* q){
+tcb* get_head(queue* q){
     return q->head->thread;
 
 }
 
-void show(struct queue* q){
+void show(queue* q){
     //print out the queue for debug reasons
     /*  Irrelevent for printing out contexts //
     int i = 0;
-    struct queue_node* cur = q->head;
+    queue_node* cur = q->head;
     for(;i<get_length(q)-1;i++){
 	printf("%d -> ", cur->thread);
 	cur = cur->prev;
@@ -89,12 +89,12 @@ void show(struct queue* q){
 
 }
 
-void destroy_queue(struct queue* q){
+void destroy_queue(queue* q){
     //free malloc'ed nodes and free queue 
-    struct queue_node* cur = q->head;
+    queue_node* cur = q->head;
     int i = 0;
     for (;i<len(q);i++){
-	struct queue_node* prev = cur->prev;
+	queue_node* prev = cur->prev;
 	free(cur->thread->ctx);
 	free(cur->thread);
 	free(cur);

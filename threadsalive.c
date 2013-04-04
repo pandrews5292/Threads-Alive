@@ -7,7 +7,6 @@ static struct queue* t_queue;
 static struct sema_queue* s_queue;
 static ucontext_t* main_ctx;
 static int sema_flag = 0;
-static sema_queue* sema_queue;
 
 
 tcb* tcb_init() {
@@ -72,14 +71,14 @@ int ta_waitall(void) {
 	swapcontext(main_ctx, next_ctx);
 	printf("LEN: %d\n", len(t_queue));
     }
-    while(len(sema_queue)){
-        tasem_t* sem = pop(sema_queue);
+    while(sema_len(s_queue)){
+        tasem_t* sem = sema_pop(s_queue);
         if (len(sem->w_queue)){
             sema_flag = 1;
             break;
         }
     }
-    destroy_queue(sema_queue);
+    sema_destroy_queue(s_queue);
 
     return sema_flag;
 }
@@ -87,11 +86,11 @@ int ta_waitall(void) {
 void ta_sem_init(tasem_t* sema, int value) {
   sema->value = value;
   sema->w_queue = create_queue();
-  push(sema_queue, sema);
+  sema_push(s_queue, sema);
 }
 
 void ta_sem_destroy(tasem_t* sema) {
-    if (len(sem->w_queue)){
+    if (len(sema->w_queue)){
         sema_flag = 1;
     }
   	destroy_queue(sema->w_queue);

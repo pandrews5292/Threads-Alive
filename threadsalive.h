@@ -5,20 +5,10 @@
 #define _XOPEN_SOURCE 600
 #include <stdio.h>
 #include <stdlib.h>
-#include <ucontext.h>
 #include "queue.h"
 #include "sema_queue.h"
 
 static struct queue* t_queue;
-
-typedef struct {
-    int value;
-    struct queue* w_queue;
-}tasem_t;
-
-typedef struct {
-    tasem_t* sem; 
-}talock_t;
 
 void ta_sem_init(tasem_t *sema, int value);
 void ta_sem_destroy(tasem_t *sema);

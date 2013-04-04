@@ -4,20 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <ucontext.h>
-#include "threadsalive.h"
-
-struct sem_node {
-  tasem_t* sem;
-  struct sem_node* next;
-  struct sem_node* prev;
-};
-
-typedef struct {
-  struct sem_node* head;
-  struct sem_node* tail;
-  int length;
-}sema_queue;
+#include "ta_structs.h"
 
 void sema_show(sema_queue*);
 
