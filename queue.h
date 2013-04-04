@@ -1,4 +1,6 @@
-#define _XOPEN_SOURCE 600
+#ifndef QUEUE_H
+#define QUEUE_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <ucontext.h>
@@ -37,6 +39,5 @@ tcb* get_head(struct queue* q);
 
 void destroy_queue(struct queue* q);
 
-
-
+#endif
 
