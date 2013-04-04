@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <ucontext.h>
 #include "queue.h"
-#include "ta_mutex.h"
 
 static struct queue* t_queue;
 

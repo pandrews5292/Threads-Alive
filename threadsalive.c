@@ -3,6 +3,8 @@
 #include "threadsalive.h"
 #define STACK_SIZE 524288
 
+static struct queue* t_queue;
+static struct sema_queue* s_queue;
 static ucontext_t* main_ctx;
 
 tcb* tcb_init() {
