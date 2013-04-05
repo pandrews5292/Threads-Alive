@@ -20,6 +20,7 @@ tcb* tcb_init() {
 
 void ta_libinit(void) {
     t_queue = create_queue();
+
     s_queue = sema_create_queue();
     main_ctx = (ucontext_t*)malloc(sizeof(ucontext_t));
 }
@@ -33,7 +34,7 @@ void ta_create(void (*func)(void), void* arg) {
     new_thread->ctx->uc_link = main_ctx;
     
     if (arg)
-	makecontext(new_thread->ctx, func, 1, *((int*)arg));
+	makecontext(new_thread->ctx, func, 1, arg);
     else
 	makecontext(new_thread->ctx, func, 0);
     
@@ -70,7 +71,6 @@ int ta_waitall(void) {
 	
 	next_ctx->uc_link = main_ctx;
 	swapcontext(main_ctx, next_ctx);
-	printf("LEN: %d\n", len(t_queue));
     }
     while(sema_len(s_queue)){
         tasem_t* sem = sema_pop(s_queue);
