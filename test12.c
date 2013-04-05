@@ -56,7 +56,7 @@ void producer(void *vptr)
 	data->buffer[i] = 0xDEADBEEF;
 
 	i = (i+1)%BUFFERSIZE;
-	ta_sem_post(&(data->fullBuffer));
+	ta_sem_signal(&(data->fullBuffer));
     }
 }
 
@@ -78,7 +78,7 @@ void consumer(void *vptr)
 
 	j = (j+1)%BUFFERSIZE;
 
-	ta_sem_post(&(data->emptyBuffer));
+	ta_sem_signal(&(data->emptyBuffer));
     }
 }
 

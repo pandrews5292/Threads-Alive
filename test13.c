@@ -57,8 +57,8 @@ void producer(void *vptr)
         data->buffer[data->pindex] = pcount++;
         data->pindex = (data->pindex + 1) % BUFFERSIZE;
 
-        ta_sem_post(&(data->pmutex));
-	ta_sem_post(&(data->fullBuffer));
+        ta_sem_signal(&(data->pmutex));
+	ta_sem_signal(&(data->fullBuffer));
     }
 }
 
@@ -81,8 +81,8 @@ void consumer(void *vptr)
         ccount++;
         data->cindex = (data->cindex + 1) % BUFFERSIZE;
 
-        ta_sem_post(&(data->cmutex));
-	ta_sem_post(&(data->emptyBuffer));
+        ta_sem_signal(&(data->cmutex));
+	ta_sem_signal(&(data->emptyBuffer));
     }
 }
 

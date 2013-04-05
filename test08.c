@@ -60,8 +60,8 @@ void take_chopsticks(int i, shared_data_t *data)
 void release_chopsticks(int i, shared_data_t *data)
 {
     fprintf(stderr, "Philosopher %d is releasing chopsticks %d and %d\n", i, i, (i+1)%NPHILOSOPHERS);
-    ta_sem_post(&data->chopstickSem[i]);
-    ta_sem_post(&data->chopstickSem[(i+1)%NPHILOSOPHERS]);
+    ta_sem_signal(&data->chopstickSem[i]);
+    ta_sem_signal(&data->chopstickSem[(i+1)%NPHILOSOPHERS]);
 }
 
 
@@ -72,7 +72,7 @@ void philosophize(void *vptr)
 
     ta_sem_wait(&data->atTableSem);
     philosopher_index = data->atTable++; 
-    ta_sem_post(&data->atTableSem);
+    ta_sem_signal(&data->atTableSem);
     fprintf(stderr, "Philosopher %d has been seated\n", philosopher_index);
 
     while (!data->stop)

@@ -49,7 +49,7 @@ void testSafetyAndLiveness(int i, shared_data_t *data)
 	 data->state[(i-1)%NPHILOSOPHERS] != EATING)) 
     {
 	data->state[i] = EATING;
-	ta_sem_post(&data->mayEat[i]);
+	ta_sem_signal(&data->mayEat[i]);
     }
 }
 
@@ -60,7 +60,7 @@ void take_chopsticks(int i, shared_data_t *data)
     ta_sem_wait(&data->mutex);
     data->state[i] = HUNGRY;
     testSafetyAndLiveness(i, data);
-    ta_sem_post(&data->mutex);
+    ta_sem_signal(&data->mutex);
     ta_sem_wait(&data->mayEat[i]);
 }
     
@@ -73,7 +73,7 @@ void release_chopsticks(int i, shared_data_t *data)
     data->state[i] = THINKING;
     testSafetyAndLiveness((i+1)%NPHILOSOPHERS, data);
     testSafetyAndLiveness((i-1)%NPHILOSOPHERS, data);
-    ta_sem_post(&data->mutex);
+    ta_sem_signal(&data->mutex);
 }
 
 
@@ -84,7 +84,7 @@ void philosophize(void *vptr)
 
     ta_sem_wait(&data->atTableSem);
     philosopher_index = data->atTable++; 
-    ta_sem_post(&data->atTableSem);
+    ta_sem_signal(&data->atTableSem);
     fprintf(stderr, "Philosopher %d has been seated\n", philosopher_index);
 
     while (!data->stop)

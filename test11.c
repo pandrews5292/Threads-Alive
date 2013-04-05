@@ -53,7 +53,7 @@ void producer(void *vptr)
 	data->buffer[i] = count++;
 
 	i = (i+1)%BUFFERSIZE;
-	ta_sem_post(&(data->fullBuffer));
+	ta_sem_signal(&(data->fullBuffer));
     }
 }
 
@@ -75,7 +75,7 @@ void consumer(void *vptr)
         expect_count++;
 
 	j = (j+1)%BUFFERSIZE;
-	ta_sem_post(&(data->emptyBuffer));
+	ta_sem_signal(&(data->emptyBuffer));
     }
 }
 

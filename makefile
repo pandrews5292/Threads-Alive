@@ -1,8 +1,8 @@
-TESTS = 01 02 03 04 05 06
+TESTS = 01 02 03 04 05 06 07 08 09 10 11 12 13
 OPTS = -Wall -Wno-unused-function -g -fPIC -Wno-deprecated-declarations
 
 testall: libthreadsalive.so
-	$(foreach var, $(TESTS), gcc -o test$(var) test/test$(var).c -L. -lthreadsalive -g;)
+	$(foreach var, $(TESTS), gcc -o test$(var) test$(var).c -L. -lthreadsalive -g;)
 	rm -rf *.dSYM
 
 queue.o: queue.c queue.h ta_structs.h
@@ -16,27 +16,6 @@ threadsalive.o: threadsalive.c threadsalive.h ta_structs.h
 
 libthreadsalive.so: threadsalive.o sema_queue.o queue.o
 	gcc -o libthreadsalive.so threadsalive.o sema_queue.o queue.o -Wall -g -shared 
-
-test_threads: test_threads.c libthreadsalive.so
-	gcc -o test_threads test_threads.c -L. -lthreadsalive -g
-
-test01: test01.c libthreadsalive.so
-	gcc -o test01 test01.c -L. -lthreadsalive -g
-	rm -rf *.dSYM
-
-test02: test02.c libthreadsalive.so
-	gcc -o test02 test02.c -L. -lthreadsalive -g
-
-test03: test03.c libthreadsalive.so
-	gcc -o test03 test03.c -L. -lthreadsalive -g
-
-test04: test04.c libthreadsalive.so
-	gcc -o test04 test04.c -L. -lthreadsalive -g
-
-test05: test05.c libthreadsalive.so
-	gcc -o test05 test05.c -L. -lthreadsalive -g
-
-
 
 clean:
 	rm -f test_threads

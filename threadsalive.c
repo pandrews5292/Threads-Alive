@@ -25,7 +25,7 @@ void ta_libinit(void) {
     main_ctx = (ucontext_t*)malloc(sizeof(ucontext_t));
 }
 
-void ta_create(void (*func)(void), void* arg) {
+void ta_create(void (*func)(void*), void* arg) {
     
     tcb* new_thread = tcb_init();
     

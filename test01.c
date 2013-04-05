@@ -27,8 +27,8 @@ int main(int argc, char **argv)
     int i = 0;
     for (i = 0; i < 2; i++)
     {
-        ta_create(&thread1, (void *)&i);
-        ta_create(&thread2, (void *)&i);
+        ta_create(thread1, (void *)&i);
+        ta_create(thread2, (void *)&i);
     }
 
     int rv = ta_waitall();

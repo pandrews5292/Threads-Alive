@@ -44,7 +44,7 @@ void reader(void *arg)
         readerloc = (readerloc+1) % datalen;
         ta_unlock(&rmutex);
         val = data[loc];
-        ta_sem_post(&writersem);
+        ta_sem_signal(&writersem);
         fprintf(stderr, "reader %d read location %d\n", tid, loc);
 
         if (random() % 2 == 0)
@@ -67,7 +67,7 @@ void writer(void *arg)
         ta_unlock(&wmutex);
 
         data[loc] = val++;
-        ta_sem_post(&readersem);
+        ta_sem_signal(&readersem);
         fprintf(stderr, "writer %d wrote location %d\n", tid, loc);
 
         if (random() % 2 == 0)
