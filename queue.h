@@ -1,41 +1,26 @@
+#ifndef QUEUE_H
+#define QUEUE_H
+
+#define _XOPEN_SOURCE 600
 #include <stdio.h>
 #include <stdlib.h>
-#include <ucontext.h>
+#include "ta_structs.h"
 
-typedef struct control_block {
-  ucontext_t* ctx;
-  int status;
-} tcb;
+void show(queue* q);
 
+tcb* pop(queue* q);
 
-struct queue_node {
-    tcb* thread;
-    struct queue_node* next;
-    struct queue_node* prev;
-};
+void push(queue* q, tcb*);
 
-typedef struct queue {
-    struct queue_node* head;
-    struct queue_node* tail;
-    int length;
-}queue;
+int len(queue* q);
 
-void show(struct queue* q);
-
-tcb* pop(struct queue* q);
-
-void push(struct queue* q, tcb*);
-
-int len(struct queue* q);
-
-struct queue* create_queue();
+queue* create_queue();
 
 struct queue_node* create_queue_node(tcb*);
 
-tcb* get_head(struct queue* q);
+tcb* get_head(queue* q);
 
-void destroy_queue(struct queue* q);
+void destroy_queue(queue* q);
 
-
-
+#endif
 

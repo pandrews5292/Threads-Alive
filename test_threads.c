@@ -1,15 +1,20 @@
 #include "threadsalive.h"
 #include <stdio.h>
 
+static tasem_t sem;
+static talock_t lock;
+
 void add(){
     
     int i = 0, n = 0;
+    ta_sem_wait(&sem);
     for (;i<10;i++){
       if (i > 7) {
 	ta_yield();
       }
       printf("%d\n",n+i);
     }
+    ta_sem_signal(&sem);
 
 }
 
@@ -30,7 +35,8 @@ int main(){
     int* x_p = &x;
 
     ta_create(&add, NULL);
-    ta_create(&add1, (void*)x_p);
+    ta_create(&add, NULL);
+    ta_sem_init(&sem, 2);
 
     ta_waitall();
 
