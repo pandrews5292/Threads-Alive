@@ -156,29 +156,34 @@ void ta_unlock(talock_t* lock){
 //////////////////////////////
 
 void ta_cond_init(tacond_t* cond) {
-  cond->c_queue = create_queue();
+    //initialize a condition variable queue for cond_var
+    cond->c_queue = create_queue();
 }
 
 void ta_cond_destroy(tacond_t* cond) {
-  destroy_queue(cond->c_queue);
+    //destroy cond_var queue
+    destroy_queue(cond->c_queue);
 }
 
 
 void ta_wait(tacond_t* cond, talock_t* lock) {
-  ta_unlock(lock);
-  tcb* new_tcb = tcb_init();
-  push(cond->c_queue, new_tcb);
-  tcb* next_tcb = pop(t_queue);
-  ucontext_t* next_ctx = next_tcb->ctx;
+    //allow thread to wait on cond_var
+    //release lock right away and wait
+    ta_unlock(lock);
+    tcb* new_tcb = tcb_init();
+    push(cond->c_queue, new_tcb);
+    tcb* next_tcb = pop(t_queue);
+    ucontext_t* next_ctx = next_tcb->ctx;
   
-  free(next_tcb);
-  swapcontext(new_tcb->ctx, next_ctx);
+    free(next_tcb);
+    swapcontext(new_tcb->ctx, next_ctx);
 
 }
 
 void ta_signal(tacond_t* cond) {
-  if(len(cond->c_queue)) {
-    tcb* next_thread = pop(cond->c_queue);
-    push(t_queue, next_thread);
-  }
+    //signal a waiter on the cond_var
+    if(len(cond->c_queue)) {
+	tcb* next_thread = pop(cond->c_queue);
+	push(t_queue, next_thread);
+    }
 }
