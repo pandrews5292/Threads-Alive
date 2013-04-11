@@ -52,7 +52,7 @@ void ta_yield(void) {
     if (len(t_queue)) {
 	tcb* next_thread = pop(t_queue);  //grab a new tcb
 	ucontext_t* next_ctx = next_thread->ctx;
-	next_ctx->uc_link = main_ctx;
+	//next_ctx->uc_link = main_ctx;
 	free(next_thread);
 	
 	tcb* cur_thread = tcb_init();  //create a new tcb to hold current context
@@ -177,6 +177,7 @@ void ta_wait(tacond_t* cond, talock_t* lock) {
   
     free(next_tcb);
     swapcontext(new_tcb->ctx, next_ctx);
+    ta_lock(lock);
 
 }
 
