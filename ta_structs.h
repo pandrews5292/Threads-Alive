@@ -59,4 +59,9 @@ typedef struct sema_queue{
   int length;
 }sema_queue;
 
+typedef struct {
+  queue* c_queue;
+  int c_id;
+} tacond_t;
+
 #endif

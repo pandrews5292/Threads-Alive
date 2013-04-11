@@ -8,7 +8,6 @@ static struct sema_queue* s_queue;
 static ucontext_t* main_ctx;
 static int sema_flag = 0;
 
-
 tcb* tcb_init() {
     tcb* new_tcb = (tcb*)malloc(sizeof(tcb));
     new_tcb->ctx = (ucontext_t*)malloc(sizeof(ucontext_t));
@@ -33,10 +32,10 @@ void ta_create(void (*func)(void*), void* arg) {
     new_thread->ctx->uc_stack.ss_size = STACK_SIZE;
     new_thread->ctx->uc_link = main_ctx;
     
-    if (arg)
-	makecontext(new_thread->ctx, func, 1, arg);
-    else
-	makecontext(new_thread->ctx, func, 0);
+    //if (arg)
+    makecontext(new_thread->ctx, func, 1, arg);
+    //else
+    //makecontext(new_thread->ctx, func, 0);
     
     push(t_queue, new_thread);
     
@@ -50,7 +49,7 @@ void ta_yield(void) {
 	next_ctx->uc_link = main_ctx;
 	free(next_thread);
 	
-	tcb* cur_thread = tcb_init();   
+	tcb* cur_thread = tcb_init();
 	
 	push(t_queue, cur_thread);
 	swapcontext(cur_thread->ctx, next_ctx); 
@@ -118,9 +117,11 @@ void ta_sem_wait(tasem_t* sema){
   }	
 }
 
+//////////////////////////////
+
 void ta_lock_init(talock_t* lock){
   lock->sem = (tasem_t*)malloc(sizeof(tasem_t));
-    ta_sem_init(lock->sem, 1);
+  ta_sem_init(lock->sem, 1);
 }
 
 void ta_lock_destroy(talock_t* lock){
@@ -136,3 +137,32 @@ void ta_unlock(talock_t* lock){
     ta_sem_signal(lock->sem);
 }
 
+//////////////////////////////
+
+void ta_cond_init(tacond_t* cond) {
+  cond->c_queue = create_queue();
+}
+
+void ta_cond_destroy(tacond_t* cond) {
+  destroy_queue(cond->c_queue);
+}
+
+
+void ta_wait(tacond_t* cond, talock_t* lock) {
+  ta_unlock(lock);
+  tcb* new_tcb = tcb_init();
+  push(cond->c_queue, new_tcb);
+  tcb* next_tcb = pop(t_queue);
+  ucontext_t* next_ctx = next_tcb->ctx;
+  
+  free(next_tcb);
+  swapcontext(new_tcb->ctx, next_ctx);
+
+}
+
+void ta_signal(tacond_t* cond) {
+  if(len(cond->c_queue)) {
+    tcb* next_thread = pop(cond->c_queue);
+    push(t_queue, next_thread);
+  }
+}

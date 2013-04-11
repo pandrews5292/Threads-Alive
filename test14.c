@@ -27,7 +27,7 @@ void thread1(void *v)
     while (value == 0)
     {
         fprintf(stderr, "thread1 going into cond_wait()\n");
-        ta_wait(&mutex, &condv);
+        ta_wait(&condv, &mutex);
     }
    
     fprintf(stderr, "thread1 emerged from cond_wait()\n");

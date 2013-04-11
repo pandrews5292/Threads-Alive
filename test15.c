@@ -39,7 +39,7 @@ void killerthr(void *v)
 void producer(void *v)
 {
     unsigned int iter = 0;
-    fprintf(stderr, "producer thread %d started up\n", ta_self());
+    //fprintf(stderr, "producer thread %d started up\n", ta_self());
     while (!stop) 
     {
 	ta_lock(&mutex);
@@ -53,13 +53,13 @@ void producer(void *v)
 	ta_signal(&empty);
 	ta_unlock(&mutex);
     }
-    fprintf(stderr, "producer thread %d ran through %d iterations\n", ta_self(), iter);
+    //fprintf(stderr, "producer thread %d ran through %d iterations\n", ta_self(), iter);
 }
 
 void consumer(void *v)
 {
     unsigned int iter = 0;
-    fprintf(stderr, "consumer thread %d started up\n", ta_self());
+    //fprintf(stderr, "consumer thread %d started up\n", ta_self());
     while (!stop) 
     {
 	ta_lock(&mutex);
@@ -74,7 +74,7 @@ void consumer(void *v)
 	ta_signal(&full);
 	ta_unlock(&mutex);
     }
-    fprintf(stderr, "consumer thread %d ran through %d iterations\n", ta_self(), iter);
+    //fprintf(stderr, "consumer thread %d ran through %d iterations\n", ta_self(), iter);
 }
 
 

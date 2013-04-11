@@ -20,10 +20,17 @@ void ta_lock_destroy(talock_t *lock);
 void ta_lock(talock_t *lock);
 void ta_unlock(talock_t *lock);
 
+void ta_cond_init(tacond_t*);
+void ta_cond_destroy(tacond_t*);
+void ta_wait(tacond_t*, talock_t*);
+void ta_signal(tacond_t*);
+
 tcb* tcb_init();
 void ta_libinit();
 void ta_create(void (*)(void*), void*);
 void ta_yield(void);
 int ta_waitall();
+
+
 
 #endif

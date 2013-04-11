@@ -39,6 +39,7 @@ int main(int argc, char **argv)
     ta_libinit();
     int i = 0;
     int nthreads = random() % 100;
+    //printf("%d\n", nthreads);
 
     locks = (talock_t *)malloc(sizeof(talock_t) * nthreads);
     data = (int *)malloc(sizeof(int) * nthreads);
